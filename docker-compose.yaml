@@ -1,0 +1,35 @@
+version: "3.5"
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:1.67.0
+    ports:
+      - "16686:16686"
+      - "14268:14268"
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+      - LOG_LEVEL=debug
+  nats:
+    image: nats:2.10.26
+    ports:
+      - "8222:8222"
+      - "4222:4222"
+    expose:
+      - "8222"
+      - "4222"
+    command: "--cluster_name NATS --cluster nats://0.0.0.0:6222 --http_port 8222"
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    expose:
+      - "5432"
+    restart: unless-stopped
+
+volumes:
+  postgres:
