@@ -21,15 +21,44 @@ services:
     image: postgres:17
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       PGDATA: /data/postgres
+      POSTGRES_DB: audit_logs
     volumes:
       - postgres:/data/postgres
+      - ./migrations:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
     expose:
       - "5432"
     restart: unless-stopped
 
+  account:
+    build:
+      context: .
+      dockerfile: ./internal/account/Dockerfile
+    depends_on:
+      - nats
+    environment:
+      - NATS_URL=nats://nats:4222
+      - JAEGER_ENDPOINT=http://jaeger:14268/api/traces
+    ports:
+      - "8080:8080"
+
+  auditlog:
+    build:
+      context: .
+      dockerfile: ./internal/auditlog/Dockerfile
+    depends_on:
+      - postgres
+      - nats
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/audit_logs?sslmode=disable
+      - NATS_URL=nats://nats:4222
+      - JAEGER_ENDPOINT=http://jaeger:14268/api/traces
+      - AUDIT_CONSUMTION_BATCH_SIZE=10000
+      - AUDIT_CONSUMTION_BATCH_FLUSH_INTERVAL_SEC=5
+
+    restart: unless-stopped
 volumes:
   postgres:
