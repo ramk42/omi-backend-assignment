@@ -71,6 +71,13 @@ without docker :
     make auditlog
     
 ```
+## migrations 
+
+The migration is performed automatically by PostgreSQL.
+
+**Note:**
+
+This is not a real migration system, but for the assessment, it gets the job done.
 
 ## Usefull command 
 
