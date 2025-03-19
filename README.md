@@ -56,7 +56,11 @@ Write the Dockerfiles to containerize both your systems.
 
 ### Running the system
 
-Once completed, update this section to describe how to start the system.
+To run the services you have to execute this command : 
+
+```shell
+  make docker-up
+```
 
 ## Bonus points (3 max.)
 
