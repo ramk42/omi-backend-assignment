@@ -121,7 +121,7 @@ The completed bonus points are:
 
 I have decided to submit the project now to avoid delays. I have done my best to ensure quality and meet the requirements while balancing the challenges of my full-time job and personal life.
 
-## Remerciements
+## Acknowledgments
 
 Thank you very much! I really enjoyed doing this test.
 
